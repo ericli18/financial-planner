@@ -6,7 +6,10 @@ import {
   useReactTable,
   flexRender,
   getCoreRowModel,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 function App() {
   // TODO: Make class a union type of user defined strings
@@ -18,6 +21,7 @@ function App() {
   };
 
   const [data, setData] = useState<Array<Todo>>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const columnHelper = createColumnHelper<Todo>();
 
@@ -29,30 +33,37 @@ function App() {
       header: () => "Assignment",
     }),
     columnHelper.accessor("dueDate", {
-      header: () => "Due Date",
+      sortingFn: 'datetime',
+      header: ({ column }) => {
+        return (
+          <button
+            onClick={() => {
+              console.log(column.getIsSorted());
+              column.toggleSorting(column.getIsSorted() === "asc");
+            }}
+          >
+            Due Date
+            <ArrowUpDown className='ml-2 h-4 w-4' />
+          </button>
+        );
+      },
     }),
     columnHelper.display({
       id: "Completed",
-      cell: props => {
-
-
-        return (
-          <input type="checkbox"></input>
-        )
+      cell: (props) => {
+        return <input type='checkbox'></input>;
       },
       header: () => "Hello",
     }),
     columnHelper.display({
       id: "Remove",
-      cell: ({row}) => {
+      cell: ({ row }) => {
         const remove = () => {
-          setData(data.filter(todo => todo !== row.original))
-        }
-        return (
-          <button onClick={remove}>Remove</button>
-        )
-      }
-    })
+          setData(data.filter((todo) => todo !== row.original));
+        };
+        return <button onClick={remove}>Remove</button>;
+      },
+    }),
   ];
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -75,12 +86,17 @@ function App() {
     columns: defaultColumns,
     data: data,
     getCoreRowModel: getCoreRowModel<Todo>(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel<Todo>(),
+    state: {
+      sorting: sorting,
+    },
   });
 
   // console.log(table.getAllColumns())
 
   return (
-    <>
+    <main className='min-h-full min-w-full grid place-items-center'>
       <h1>To do list</h1>
       {/* {data.map((todo, index) => (
         <div key={index}>
@@ -125,7 +141,7 @@ function App() {
         <input type='date' name='dueDate' placeholder='Due Date' />
         <button type='submit'>Add todo</button>
       </form>
-    </>
+    </main>
   );
 }
 
