@@ -8,6 +8,7 @@ import {
   getCoreRowModel,
   useReactTable,
   getSortedRowModel,
+  Row,
 } from "@tanstack/react-table"
 
 import {
@@ -41,6 +42,22 @@ export function DataTable<TData, TValue>({
     },
   })
 
+  const getColor = (row: Row<TData>) => {
+    const className = row.getValue("class")
+    switch (className) {
+      case "Math":
+        return "bg-red-50"
+      case "English":
+        return "bg-green-50"
+      case "Science":
+        return "bg-blue-50"
+      case "History":
+        return "bg-yellow-50"
+      default:
+        return "bg-white"
+    }
+  }
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -68,9 +85,10 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                className={getColor(row)}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
