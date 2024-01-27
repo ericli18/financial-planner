@@ -7,6 +7,41 @@ app.use(express.json());
 const port = process.env.PORT || 9000;
 console.log(port);
 
+app.get('/', (req, res) => {
+    var hi = "hi";
+    res.json({hi});
+});
+
+app.post('/getUserFromEmail', async (req, res) => {
+    let request = req.body;
+    const user = await getUserFromEmail(request['email']);
+    res.json({user});
+})
+
+app.post('/getUserPermissionsForGroup', async (req, res) => {
+    let request = req.body;
+    const permission = await getUserPermissionsForGroup(request['userId'], request['groupId']);
+    res.json({permission});
+})
+
+app.post('/addUser', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await addUser(request['username'], request['email']);
+    res.json({updateSuccess});
+})
+
+app.post('/addTaskToTemplate', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await addTaskToTemplate(request['templateId'], request['name'], request['dueDateTime']);
+    res.json({updateSuccess});
+})
+
+app.post('/getAllGroupsForUser', async (req, res) => {
+    let request = req.body;
+    const groups = await getAllGroupsForUser(request['userId']);
+    res.json({groups});
+})
+
 const pool = new Pool({
     user: process.env.PSQL_USER,
     host: process.env.PSQL_HOST,
@@ -29,6 +64,24 @@ async function getUserFromEmail(email) {
         console.log(error);
     }
     return user;
+}
+
+async function getAllGroupsForUser(userId) {
+    var groups = [];
+    try {
+        await pool
+            .query('SELECT * FROM groups WHERE user_id = ' + userId + ';')
+            .then((query_res) => {
+                    for (let i = 0; i < query_res.rowCount; ++i) {
+                        groups.push(query_res.rows[i]);
+                    }
+                }
+            )
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return groups;
 }
 
 async function getUserPermissionsForGroup(userId, groupId) {
@@ -102,6 +155,17 @@ async function addTaskToTemplate(template_id, name, dueDateTime) {
         return true;
     }
     catch (error) {
+        console.log(error);
         return false;
     }
 }
+
+process.on('SIGINT', function() {
+    pool.end();
+    console.log('Application successfully shutdown.');
+    process.exit(0);
+});
+
+app.listen(port, 'localhost',() => {
+    console.log(`listening at localhost:${port}`);
+});
