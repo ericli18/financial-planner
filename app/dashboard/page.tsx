@@ -9,6 +9,16 @@ import {
   SortingState,
   getSortedRowModel,
 } from "@tanstack/react-table";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./Table";
+
 import { ArrowUpDown } from "lucide-react";
 
 function App() {
@@ -98,42 +108,35 @@ function App() {
   return (
     <main className='min-h-full min-w-full grid place-items-center'>
       <h1>To do list</h1>
-      {/* {data.map((todo, index) => (
-        <div key={index}>
-          <h3>{todo.assignment}</h3>
-          <p>{todo.dueDate}</p>
-          <p>{todo.completed}</p>
-        </div>
-      ))} */}
-      <table>
-        <thead>
+      <Table>
+        <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-                </th>
+                </TableHead>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </thead>
-        <tbody>
+        </TableHeader>
+        <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
 
       <form onSubmit={onSubmit}>
         <input name='class' placeholder='Class' />
