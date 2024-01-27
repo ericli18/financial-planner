@@ -27,6 +27,8 @@ app.post('/getUserPermissionsForGroup', async (req, res) => {
 })
 
 app.post('/addUser', async (req, res) => {
+    // to send data
+    // JSON.stringify({username: username, email: email});
     let request = req.body;
     const updateSuccess = await addUser(request['username'], request['email']);
     res.json({updateSuccess});
@@ -34,7 +36,7 @@ app.post('/addUser', async (req, res) => {
 
 app.post('/addTaskToTemplate', async (req, res) => {
     let request = req.body;
-    const updateSuccess = await addTaskToTemplate(request['templateId'], request['name'], request['dueDateTime']);
+    const updateSuccess = await addTaskToTemplate(request['groupId'], request['name'], request['dueDateTime']);
     res.json({updateSuccess});
 })
 
@@ -42,6 +44,30 @@ app.post('/getAllGroupsForUser', async (req, res) => {
     let request = req.body;
     const groups = await getAllGroupsForUser(request['userId']);
     res.json({groups});
+})
+
+app.post('/addGroup', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await addGroup(request['name'], request['password']);
+    res.json({updateSuccess});
+})
+
+app.post('/addTemplateToUser', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await copyGroupTemplateToUser(request['groupId'], request['userId']);
+    res.json({updateSuccess});
+})
+
+app.post('/getTasksForTemplate', async (req, res) => {
+    let request = req.body;
+    const tasks = await getAllTasksForTemplate(request['groupId']);
+    res.json({tasks});
+})
+
+app.post('/getTasksForPersonalTemplate', async (req, res) => {
+    let request = req.body;
+    const tasks = await getAllTasksForPersonalTemplate(request['groupId']);
+    res.json({tasks});
 })
 
 const pool = new Pool({
@@ -86,6 +112,75 @@ async function getAllGroupsForUser(userId) {
     return groups;
 }
 
+async function getAllPersonalTemplatesForUser(userId) {
+    var templates = [];
+    try {
+        await pool
+            .query('SELECT * FROM personal_templates WHERE user_id = ' + userId + ";")
+            .then((query_res) => {
+                for (let i = 0; i < query_res.rowCount; ++i) {
+                    templates.push(query_res.rows[i]);
+                }
+            })
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return templates;
+}
+
+async function getAllTasksForPersonalTemplate(personalGroupId) {
+    var tasks = [];
+    try {
+        await pool
+            .query(
+                'SELECT * FROM personal_tasks WHERE personal_template_id = ' + personalGroupId + ';'
+            ).then((query_res) => {
+                for (let i = 0; i < query_res.rowCount; ++i) {
+                    tasks.push(express.query.rows[i]);
+                }
+            })
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return tasks;
+}
+
+async function copyGroupTemplateToUser(groupId, userId) {
+    try {
+        var tasks = await getAllTasksForTemplate(groupId);
+        var group = [];
+        await pool
+            .query('SELECT * FROM groups WHERE id = ' + groupId + ";")
+            .then((query_res) => {
+                group = query_res.rows[0];
+            })
+        await pool
+            .query(
+                'INSERT INTO personal_templates (id, user_id, name, last_edited) VALUES ' + 
+                "("+ groupId + ", " + userId + ", \'" + group['name'] + "\', LOCALTIMESTAMP);"
+            )
+        if (tasks.length > 0) {
+            var queryString = "(INSERT INTO personal_tasks (personal_template_id, name, due_date_time) VALUES (";
+            for (const task of tasks) {
+                queryString += groupId + ', \'' + task['name'] + "\', " + task['due_date_time'] + ",";
+            }
+            queryString[-1] = ")";
+            queryString += ";";
+            await pool
+                .query(
+                    queryString
+                )
+        }
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
 async function getUserPermissionsForGroup(userId, groupId) {
     var permission = null;
     try {
@@ -119,8 +214,8 @@ async function addGroup(name, password) {
     try {
         await pool
             .query(
-                "INSERT INTO groups (name, password) VAlUES" +
-                "(\'" + name + "\', \'" + password + "\');"
+                "INSERT INTO groups (name, password, last_edited) VALUES" +
+                "(\'" + name + "\', \'" + password + "\', LOCALTIMESTAMP);"
             );
         return true;
     }
@@ -129,30 +224,33 @@ async function addGroup(name, password) {
     }
 }
 
-async function getGroupTemplate(group_id) {
-    var templateId = null;
+
+async function getAllTasksForTemplate(groupId) {
+    var tasks = [];
     try {
         await pool
             .query(
-                "SELECT template_id FROM groups WHERE id = " + group_id + ";"
+                "SELECT * FROM tasks WHERE template_id = " + groupId + ";"
             ).then((query_res) => {
-                templateId = query_res.rows[0];
-            });
+                for (let i = 0; i < query_res.rowCount; ++i) {
+                    tasks.push(query_res.rows[i]);
+                }
+            })
     }
     catch (error) {
         console.log(error);
     }
-    return templateId;
+    return tasks;
 }
 
-async function addTaskToTemplate(template_id, name, dueDateTime) {
+async function addTaskToTemplate(groupId, name, dueDateTime) {
     try {
         let date = new Date(dueDateTime);
         let newDateTime = date.toISOString().slice(0,19).replace('T', ' ');
         await pool
             .query(
-                "INSERT INTO tasks (template_id, name, due_date_time) VALUES "+
-                "(" + template_id + ", \'" + name + "\', \'" + newDateTime + "\');"
+                "INSERT INTO tasks (groupId, name, due_date_time) VALUES "+
+                "(" + groupId + ", \'" + name + "\', \'" + newDateTime + "\');"
             );
         return true;
     }
