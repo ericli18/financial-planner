@@ -1,9 +1,11 @@
 const express = require('express');
 const { Pool } = require('pg');
 const dotenv = require('dotenv').config();
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 const port = process.env.PORT || 9000;
 console.log(port);
 
