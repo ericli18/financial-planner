@@ -1,8 +1,11 @@
 import { Todo, defaultColumns } from "./Columns"
 import { DataTable } from "./DataTable"
 import Form from "./EventForm"
+import { currentUser } from '@clerk/nextjs';
 
 async function getData(): Promise<Todo[]> {
+  const user = await currentUser();
+  console.log(user);
   return [
     {
       class: "Math",
