@@ -1,5 +1,6 @@
 import { Todo, defaultColumns } from "./Columns"
 import { DataTable } from "./DataTable"
+import Form from "./EventForm"
 
 async function getData(): Promise<Todo[]> {
   return [
@@ -30,6 +31,7 @@ export default async function Page() {
   return (
     <div className="container mx-auto py-10">
       <DataTable columns={defaultColumns} data={data} />
+      <Form />
     </div>
   )
 }
