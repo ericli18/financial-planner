@@ -182,6 +182,11 @@ app.post('/getGroup', async (req, res) => {
     res.json({group});
 })
 
+app.get('/getAllGroups', async (req, res) => {
+    var groups = await getAllGroups();
+    res.json({groups});
+})
+
 const pool = new Pool({
     user: process.env.PSQL_USER,
     host: process.env.PSQL_HOST,
@@ -624,6 +629,23 @@ async function addTaskToTemplate(groupId, className, name, dueDateTime) {
         console.log(error);
         return false;
     }
+}
+
+async function getAllGroups() {
+    try {
+        var groups =[];
+        await pool
+            .query("SELECT * FROM groups;")
+            .then((query_res) => {
+                for (let i = 0; i < query_res.rowCount; ++i) {
+                    groups.push(query_res.rows[i]);
+                }
+            })
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return groups;
 }
 
 async function getTasksInRange(userId, daysForward = 3) {
