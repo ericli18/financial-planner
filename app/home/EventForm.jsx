@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { Input } from "./Input";
-import { Button } from "./Button";
+import { Input } from "@/components/Input";
+import { Button } from "@/components/Button";
 import dayjs from "dayjs";
 
 export default function Form() {

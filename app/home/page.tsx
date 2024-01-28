@@ -2,7 +2,6 @@ import { Todo, defaultColumns } from "./Columns";
 import { DataTable } from "./DataTable";
 import Form from "./EventForm";
 import { SignInButton, SignOutButton, useAuth } from "@clerk/nextjs";
-import './dashboard.css'; // Make sure this path is correct for your CSS file
 import Link from 'next/link'; // Import Link from Next.js
 
 

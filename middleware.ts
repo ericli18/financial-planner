@@ -11,7 +11,6 @@ export default authMiddleware({
 
   publicRoutes: ['/'],
   afterAuth(auth, req, evt) {
-    console.log(auth);
     if (auth.userId && !auth.isPublicRoute) {
       return NextResponse.next();
     }
