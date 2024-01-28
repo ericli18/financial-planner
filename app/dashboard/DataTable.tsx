@@ -55,11 +55,11 @@ export function DataTable<TData, TValue>({
     switch (className) {
       case "Math":
         return "bg-red-100 hover:bg-red-200";
-      case "English":
-        return "bg-green-100 hover:bg-green-200";
       case "Science":
-        return "bg-blue-100 hover:bg-blue-200";
+        return "bg-green-100 hover:bg-green-200";
       case "History":
+        return "bg-blue-100 hover:bg-blue-200";
+      case "English":
         return "bg-yellow-100 hover:bg-yellow-200";
       default:
         return "bg-white hover:bg-gray-100";

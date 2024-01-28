@@ -31,6 +31,7 @@ export const defaultColumns = [
   }),
   columnHelper.accessor("class", {
     header: () => "Class",
+    enableHiding: true,
   }),
   columnHelper.accessor("assignment", {
     header: () => "Assignment",
