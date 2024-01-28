@@ -9,18 +9,21 @@ import Link from 'next/link'; // Import Link from Next.js
 async function getData(): Promise<Todo[]> {
   return [
     {
+      id: 1,
       class: "Math",
       assignment: "HW 1",
       dueDate: "2020-11-01",
       completed: false,
     },
     {
+      id: 2,
       class: "Math",
       assignment: "HW 2",
       dueDate: "2020-11-02",
       completed: false,
     },
     {
+      id: 3,
       class: "English",
       assignment: "Essay 1",
       dueDate: "2020-11-03",

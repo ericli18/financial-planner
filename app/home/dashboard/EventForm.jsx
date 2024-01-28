@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import { Input } from "./Input";
 import { Button } from "./Button";
+import dayjs from "dayjs";
 
 export default function Form() {
   const {
@@ -47,6 +48,7 @@ export default function Form() {
       {errors.exampleRequired && <span>This field is required</span>}
       <Input
         type='datetime-local'
+        defaultValue={dayjs().format("YYYY-MM-DDTHH:mm")}
         {...register("dueDate", { required: true })}
       />
       {errors.exampleRequired && <span>This field is required</span>}
