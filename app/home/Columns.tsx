@@ -2,6 +2,8 @@
 
 import { createColumnHelper, sortingFns } from "@tanstack/react-table";
 import { deleteTodo } from "./action";
+import { FaTrash } from 'react-icons/fa';
+
 
 import dayjs from "dayjs";
 
@@ -61,14 +63,22 @@ export const defaultColumns = [
   columnHelper.display({
     id: "More",
     cell: ({ row }) => {
-      const serverId = row.original.id;
-      return (
-        <MoreHorizontal
-          className='h-4 w-4'
-          onClick={() => deleteTodo(serverId)}
-        />
-      );
+        const serverId = row.original.id;
+        return (
+            <button 
+                onClick={() => deleteTodo(serverId)} 
+                style={{ 
+                    display: 'flex', 
+                    justifyContent: 'flex-start', 
+                    alignItems: 'center',
+                    paddingLeft: '12px',  // Adjust as needed
+                }}
+            >
+                <FaTrash className='h-4 w-4' />
+            </button>
+        );
     },
+    header: () => "Delete",
   }),
   // columnHelper.display({
   //   id: "Remove",
