@@ -152,7 +152,7 @@ async function getUserFromEmail(email) {
     var user = null;
     try {
         await pool
-            .query('SELECT * FROM users WHERE email = '+email + ";")
+            .query('SELECT * FROM users WHERE email = \'' + email + "\';")
             .then((query_res) => {
                 user = query_res.rows[0];
             });
