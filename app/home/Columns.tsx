@@ -59,6 +59,7 @@ export const defaultColumns = [
         <div>{dayjs(row.original.dueDate).format("MM/DD/YYYY HH:mm")}</div>
       );
     },
+    size: 10,
   }),
   columnHelper.display({
     id: "More",
@@ -72,14 +73,12 @@ export const defaultColumns = [
             display: "flex",
             justifyContent: "flex-start",
             alignItems: "center",
-            paddingLeft: "12px", // Adjust as needed
           }}
         >
           <FaTrash className='h-4 w-4' />
         </button>
       );
     },
-    header: () => "Delete",
   }),
   // columnHelper.display({
   //   id: "Remove",

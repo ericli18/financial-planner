@@ -40,7 +40,7 @@ export default async function Header() {
             {
               groups.map((group, i) => {
                 return (
-                  <Link href ={`/home/group/${group.id}`}>
+                  <Link href ={`/home/group/${group.id}`} key={i}>
                     <DropdownMenuItem key={i}>
                       {group.name}
                     </DropdownMenuItem>
