@@ -317,18 +317,25 @@ async function copyGroupTemplateToUser(groupId, userId) {
             .then((query_res) => {
                 group = query_res.rows[0];
             })
+        // var id = 0;
+        // await pool
+        //     .query(
+        //         'INSERT INTO personal_templates (group_id, user_id, name, last_edited) VALUES ' + 
+        //         "("+ groupId + ", " + userId + ", \'" + group['name'] + "\', LOCALTIMESTAMP); SELECT MAX(id) FROM personal_templates;"
+        //     ).then((query_res) => {
+        //         id = query_res[1].rows[0].max;;
+        //     })
         var id = 0;
         await pool
             .query(
-                'INSERT INTO personal_templates (group_id, user_id, name, last_edited) VALUES ' + 
-                "("+ groupId + ", " + userId + ", \'" + group['name'] + "\', LOCALTIMESTAMP); SELECT MAX(id) FROM personal_templates;"
+                'SELECT id FROM personal_templates WHERE user_id = ' + userId + ';'
             ).then((query_res) => {
-                id = query_res[1].rows[0].max;;
+                id = query_res.rows[0].id;
             })
         var addedTasks = [];
         await pool
             .query(
-                'SELECT * FROM personal_tasks WHERE personal_template_id =' + id + ';'
+                'SELECT * FROM personal_tasks WHERE personal_template_id = ' + id + ';'
             ).then((query_res) => {
                 for (let i = 0; i < query_res.rowCount; ++i) {
                     addedTasks.push(query_res.rows[i].id);
