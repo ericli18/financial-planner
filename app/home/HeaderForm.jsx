@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
+import { revalidate } from "./action";
 
 export default function HeaderForm({userId}) {
   const {
@@ -29,6 +30,7 @@ export default function HeaderForm({userId}) {
     });
     console.log(groupRes)
     console.log(match[1]);
+    revalidate();
   };
 
   return (
