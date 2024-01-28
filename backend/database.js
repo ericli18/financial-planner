@@ -119,7 +119,24 @@ app.post('/updatePersonalTaskDueDateTime', async (req, res) => {
 app.post('/kickUser', async (req, res) => {
     let request = req.body;
     const kickSuccess = await kickUser(request['userId'], request['groupId']);
+    res.json({kickSuccess});
+})
+
+app.post('/addPersonalTask', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await addPersonalTask(request['personalTemplateId'], request['name'], request['dueDateTime']);
     res.json({updateSuccess});
+})
+
+app.post('/deletePersonalTask', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await deletePersonalTask(request['personalTaskId']);
+    res.json({updateSuccess});
+})
+
+app.post('/deleteTask', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await deleteTask(request['taskId']);
 })
 
 const pool = new Pool({
@@ -232,6 +249,7 @@ async function copyGroupTemplateToUser(groupId, userId) {
             for (const task of tasks) {
                 queryString += groupId + ', \'' + task['name'] + "\', " + task['due_date_time'] + ",";
             }
+            // remove extra ","
             queryString[-1] = ")";
             queryString += ";";
             await pool
@@ -239,6 +257,49 @@ async function copyGroupTemplateToUser(groupId, userId) {
                     queryString
                 )
         }
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function addPersonalTask(personalTemplateId, name, dueDateTime) {
+    try {
+        await pool
+            .query(
+                'INSERT INTO personal_tasks (personal_template_id, name, due_date_time) VALUES ' +
+                "(" + personalTemplateId + ", \'" + name + "\', " + dueDateTime + ");"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function deletePersonalTask(personalTaskId) {
+    try {
+        await pool
+            .query(
+                'DELETE FROM personal_tasks WHERE id = ' + personalTaskId + ';'
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function deleteTask(taskId) {
+    try {
+        await pool
+            .query(
+                'DELETE FROM tasks WHERE id = ' + taskId + ';'
+            )
         return true;
     }
     catch (error) {
