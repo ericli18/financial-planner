@@ -2,6 +2,7 @@
 
 import { createColumnHelper, sortingFns } from "@tanstack/react-table";
 import { deleteTodo } from "./action";
+import { FaTrash } from "react-icons/fa";
 
 import dayjs from "dayjs";
 
@@ -65,12 +66,20 @@ export const defaultColumns = [
       const serverId = row.original.id;
       const personal = row.original.personal;
       return (
-        <MoreHorizontal
-          className='h-4 w-4'
+        <button
           onClick={() => deleteTodo(serverId, personal)}
-        />
+          style={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            paddingLeft: "12px", // Adjust as needed
+          }}
+        >
+          <FaTrash className='h-4 w-4' />
+        </button>
       );
     },
+    header: () => "Delete",
   }),
   // columnHelper.display({
   //   id: "Remove",
