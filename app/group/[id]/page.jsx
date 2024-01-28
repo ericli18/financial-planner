@@ -37,7 +37,6 @@ export default async function Page({ params }) {
   return (
     <div className='container mx-auto py-10 min-h-screen flex flex-col gap-12 items-center'>
       <h1>Tasks for {id}</h1>
-      <button onClick={change(2)}></button>
       <Form />
       <DataTable columns={defaultColumns} data={tasks} />
     </div>
