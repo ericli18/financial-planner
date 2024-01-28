@@ -137,6 +137,31 @@ app.post('/deletePersonalTask', async (req, res) => {
 app.post('/deleteTask', async (req, res) => {
     let request = req.body;
     const updateSuccess = await deleteTask(request['taskId']);
+    res.json({updateSuccess});
+})
+
+app.post('/updatePersonalTaskClass', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await updatePersonalTaskClass(request['personTaskId'], request['class']);
+    res.json({updateSuccess});
+})
+
+app.post('/updateTaskClass', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await updatePersonalTaskClass(request['personalTaskId'], request['class']);
+    res.json({updateSuccess});
+})
+
+app.post('/toggleFinishedTask', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await toggleTask(request['taskId']);
+    res.json({updateSuccess});
+})
+
+app.post('/toggleFinishedPersonalTask', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await togglePersonalTask(request['personalTaskId']);
+    res.json({updateSuccess});
 })
 
 const pool = new Pool({
@@ -180,14 +205,29 @@ async function kickUser(userId, groupId) {
 async function getAllGroupsForUser(userId) {
     var groups = [];
     try {
+        var queryString = 'SELECT * FROM groups WHERE id in (';
         await pool
-            .query('SELECT * FROM groups WHERE user_id = ' + userId + ';')
+            .query('SELECT * FROM user_permissions WHERE user_id = ' + userId + ';')
             .then((query_res) => {
                     for (let i = 0; i < query_res.rowCount; ++i) {
                         groups.push(query_res.rows[i]);
+                        queryString += query_res.rows[i].group_id+",";
                     }
+                    queryString = queryString.substring(0, queryString.length-1);
+                    queryString += ");";
                 }
             )
+        // console.log(queryString);
+        if (groups.length > 0) {
+            groups = [];
+            await pool
+                .query(queryString)
+                .then((query_res) => {
+                    for (let i = 0; i < query_res.rowCount; ++i) {
+                        groups.push(query_res.rows[i]);
+                    }
+                })
+        }
     }
     catch (error) {
         console.log(error);
@@ -241,17 +281,27 @@ async function copyGroupTemplateToUser(groupId, userId) {
             })
         await pool
             .query(
-                'INSERT INTO personal_templates (id, user_id, name, last_edited) VALUES ' + 
+                'INSERT INTO personal_templates (group_id, user_id, name, last_edited) VALUES ' + 
                 "("+ groupId + ", " + userId + ", \'" + group['name'] + "\', LOCALTIMESTAMP);"
             )
+        var addedTasks = [];
+        await pool
+            .query(
+                'SELECT * FROM personal_tasks WHERE personal_template_id in (SELECT MAX(id) FROM personal_templates);'
+            ).then((query_res) => {
+                for (let i = 0; i < query_res.rowCount; ++i) {
+                    addedTasks.push(query_res.rows[i].id);
+                }
+            })
+        tasks = tasks.filter((task) => !(task.id in addedTasks));
         if (tasks.length > 0) {
-            var queryString = "(INSERT INTO personal_tasks (personal_template_id, name, due_date_time) VALUES (";
+            var queryString = "(INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES (";
             for (const task of tasks) {
-                queryString += groupId + ', \'' + task['name'] + "\', " + task['due_date_time'] + ",";
+                queryString += groupId + ', \'' + task['class'] + "\', " + ', \'' + task['name'] + "\', " + task['due_date_time'] + ", false,";
             }
             // remove extra ","
-            queryString[-1] = ")";
-            queryString += ";";
+            queryString = queryString.substring(0, queryString.length-1);
+            queryString += ");";
             await pool
                 .query(
                     queryString
@@ -265,12 +315,40 @@ async function copyGroupTemplateToUser(groupId, userId) {
     return false;
 }
 
-async function addPersonalTask(personalTemplateId, name, dueDateTime) {
+async function togglePersonalTask(personalTaskId) {
     try {
         await pool
             .query(
-                'INSERT INTO personal_tasks (personal_template_id, name, due_date_time) VALUES ' +
-                "(" + personalTemplateId + ", \'" + name + "\', " + dueDateTime + ");"
+                'UPDATE TABLE personal_tasks SET finished = NOT finished WHERE id = ' + personalTaskId + ";" 
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function toggleTask(taskId) {
+    try {
+        await pool
+            .query(
+                'UPDATE TABLE tasks SET finished = NOT finished WHERE id = ' + taskId + ";" 
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function addPersonalTask(personalTemplateId, className, name, dueDateTime, finished) {
+    try {
+        await pool
+            .query(
+                'INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES ' +
+                "(" + personalTemplateId + ", \'" + className + ", \'" + name + "\', " + dueDateTime + ", " + finished + ");"
             )
         return true;
     }
@@ -350,6 +428,20 @@ async function updateTaskDueDateTime(taskId, newDateTime) {
     return false;
 }
 
+async function updateTaskClass(taskId, newClass) {
+    try {
+        await pool
+            .query(
+                "UPDATE tasks SET class = " + newClass + " WHERE id = " + taskId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
 async function updatePersonalTemplateName(personalTemplateId, newName) {
     try {
         await pool
@@ -383,6 +475,20 @@ async function updatePersonalTaskDueDateTime(personalTaskId, newDateTime) {
         await pool
             .query(
                 "UPDATE personal_tasks SET due_date_time = " + newDateTime + " WHERE id = " + personalTaskId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function updatePersonalTaskClass(personalTaskId, newClass) {
+    try {
+        await pool
+            .query(
+                "UPDATE personal_tasks SET class = " + newClass + " WHERE id = " + personalTaskId + ";"
             )
         return true;
     }
@@ -468,14 +574,14 @@ async function getAllTasksForTemplate(groupId) {
     return tasks;
 }
 
-async function addTaskToTemplate(groupId, name, dueDateTime) {
+async function addTaskToTemplate(groupId, className, name, dueDateTime, finished) {
     try {
         let date = new Date(dueDateTime);
         let newDateTime = date.toISOString().slice(0,19).replace('T', ' ');
         await pool
             .query(
-                "INSERT INTO tasks (groupId, name, due_date_time) VALUES "+
-                "(" + groupId + ", \'" + name + "\', \'" + newDateTime + "\');"
+                "INSERT INTO tasks (groupId, class, name, due_date_time, finished) VALUES "+
+                "(" + groupId + ", \'" + className + "\', \'" + name + "\', \'" + newDateTime + "\', " + finished +");"
             );
         return true;
     }
