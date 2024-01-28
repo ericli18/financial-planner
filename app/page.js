@@ -13,7 +13,7 @@ export default async function Home() {
   }
   return (
     <main className="mainContainer">
-      <h1 className="centeredTitle">Just To-Do It</h1>
+      <h1 className="centeredTitle">taskademic</h1>
       {!user && <SignInButton className="signInButton" />}
       <UserButton className="userButton" afterSignOutUrl="/" />
     </main>

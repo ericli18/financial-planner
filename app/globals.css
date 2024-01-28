@@ -82,8 +82,8 @@
 }
 
 .signInButton {
-  background-color: #4caf50; /* Green background */
-  color: white; /* White text */
+  background-color: white; /* Green background */
+  color: black; /* White text */
   padding: 15px 32px; /* Padding around the text */
   text-align: center; /* Centered text */
   text-decoration: none; /* No underline */
@@ -94,10 +94,11 @@
   border: none; /* No border */
   border-radius: 8px; /* Rounded corners */
   transition: background-color 0.3s; /* Smooth transition for background color */
+  font-family: Aargh;
 }
 
 .signInButton:hover {
-  background-color: #3e8e41; /* Darker green background on hover */
+  background-color: #e1d9d1; /* Darker green background on hover */
 }
 
 .userButton {
@@ -112,21 +113,23 @@
   cursor: pointer; /* Pointer cursor on hover */
   border: none; /* No border */
   border-radius: 8px; /* Rounded corners */
+  
 }
 
 .mainContainer {
-  background: linear-gradient(to bottom, #e6f8fe, #c8e9fd); /* Blue gradient from light to dark */
-  color: black;
+  background: linear-gradient(to bottom,#000000, #434343); /* Blue gradient from light to dark */
+  color: white;
   display: flex;
   flex-direction: column;
   justify-content: center; /* Center vertically */
   align-items: center; /* Center horizontally */
   min-height: 100vh; /* Full viewport height */
   padding: 24px;
+  font-family: Aargh;
 }
 
 .centeredTitle {
-  font-size: 48px; /* Larger font size */
+  font-size: 75px; /* Larger font size */
   font-weight: bold; /* Bolder text */
   margin-bottom: 20px; /* Adjust as needed */
 }
