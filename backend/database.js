@@ -360,7 +360,7 @@ async function addPersonalTask(personalTemplateId, className, name, dueDateTime)
         await pool
             .query(
                 'INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES ' +
-                "(" + personalTemplateId + ", \'" + className + "\', " + name + "\', \'" + date + "\', false);"
+                "(" + personalTemplateId + ", \'" + className + "\', \'" + name + "\', \'" + date + "\', false);"
             )
         return true;
     }
