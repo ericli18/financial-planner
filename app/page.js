@@ -1,12 +1,14 @@
-import { UserButton } from "@clerk/nextjs";
-import { SignInButton } from "@clerk/nextjs";
+import React from 'react';
+import { SignInButton, UserButton } from '@clerk/nextjs';
+import './globals.css'; // Import the stylesheet
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1 className="text-6xl font-bold">Log in page</h1>
-      <SignInButton />
-      <UserButton afterSignOutUrl="/"/>
+    <main className="mainContainer">
+      <h1 className="centeredTitle">Enhanced To-Do Lists with sharing feasibility</h1>
+      <SignInButton className="signInButton" />
+      <UserButton className="userButton" afterSignOutUrl="/" />
     </main>
   );
 }
+
