@@ -8,10 +8,13 @@ export default async function Header() {
     redirect("/");
   }
   return (
-    <nav className='min-w-full flex justify-end gap-8 shadow-sm px-12 py-4'>
-      <Link href='/home/dashboard'>Dashboard</Link>
-      <Link href='/home/group'>Group</Link>
-      <UserButton />
+    <nav className="min-w-full flex justify-between shadow-sm px-12 py-4">
+      <Link href ='/home'>Home</Link>
+      <div className="flex gap-8 justify-end">
+        <Link href='/home/dashboard'>Dashboard</Link>
+        <Link href='/home/group'>Group</Link>
+        <UserButton />
+      </div>
     </nav>
   );
 }
