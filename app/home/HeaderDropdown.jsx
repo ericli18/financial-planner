@@ -7,9 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/Dropdown";
-import {
-  DropdownMenuItemIndicator,
   DropdownMenuSeparator,
 } from "@/components/Dropdown";
 import Link from "next/link";
@@ -20,14 +17,17 @@ import {
   DialogTrigger,
 } from "@/components/Dialog";
 import { Label } from "@/components/Label";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { createNewGroup } from './action'
 
 const HeaderDropdown = ({ groups }) => {
   const {register, handleSubmit, watch, reset, formState: {errors}} = useForm();
 
   const url = process.env.REACT_APP_URL || "http://localhost:9000";
-  const createNewGroup = async (initialData) => {
-    console.log(initialData);
-  };
+
+  const createGroup = async (initialData) => {
+    await createNewGroup(initialData.name, initialData.password);
+  }
 
   const joinGroup = async (initialData) => {
     console.log(initialData);
@@ -57,12 +57,14 @@ const HeaderDropdown = ({ groups }) => {
                 <DialogTitle>Create Group</DialogTitle>
                 <DialogDescription>Create a new Group</DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleSubmit(createNewGroup)} className="flex flex-col gap-4">
+              <form onSubmit={handleSubmit(createGroup)} className="flex flex-col gap-4">
                 <Label>Name</Label>
-                <Input id='name' {...register("name")}/>
+                <Input id='name' {...register("name", {required: true})}/>
                 <Label>Password</Label>
-                <Input id='password' {...register("password")} />
-                <Button type='submit'>Submit</Button>
+                <Input id='password' {...register("password", { required: true })} />
+                <DialogClose asChild>
+                  <Button type='submit'>Submit</Button>
+                </DialogClose>
               </form>
             </DialogContent>
           </Dialog>
