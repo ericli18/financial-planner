@@ -45,6 +45,7 @@ export const defaultColumns = [
           onClick={() => {
             column.toggleSorting(column.getIsSorted() === "asc");
           }}
+          className='flex items-center'
         >
           Due Date
           <ArrowUpDown className='ml-2 h-4 w-4' />
@@ -52,14 +53,21 @@ export const defaultColumns = [
       );
     },
     cell: ({ row }) => {
-      return <div>{dayjs(row.original.dueDate).format('MM/DD/YYYY HH:mm')}</div>;
-    }
+      return (
+        <div>{dayjs(row.original.dueDate).format("MM/DD/YYYY HH:mm")}</div>
+      );
+    },
   }),
   columnHelper.display({
     id: "More",
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const serverId = row.original.id;
-      return <MoreHorizontal className='h-4 w-4' onClick={() => deleteTodo(serverId)}/>;
+      return (
+        <MoreHorizontal
+          className='h-4 w-4'
+          onClick={() => deleteTodo(serverId)}
+        />
+      );
     },
   }),
   // columnHelper.display({

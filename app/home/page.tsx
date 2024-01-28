@@ -20,7 +20,6 @@ async function getData(email: string): Promise<Todo[]> {
     body: JSON.stringify({ email }),
   });
   const data = await response.json();
-  console.log(data.user.id)
   const response1 = await fetch(`${url}/getAllPersonalTemplatesForUser`, {
     method: "POST",
     headers: {
@@ -29,7 +28,7 @@ async function getData(email: string): Promise<Todo[]> {
     body: JSON.stringify({ userId: data.user.id}),
   });
   const data1 = await response1.json();
-  console.log(data1)
+  // console.log(data1)
   const response2 = await fetch(`${url}/getTasksForPersonalTemplate`, {
     method: "POST",
     headers: {
@@ -39,7 +38,7 @@ async function getData(email: string): Promise<Todo[]> {
     next: { tags: ['todos'] }
   });
   const data2 = await response2.json();
-  console.log(data2)
+  // console.log(data2)
   return data2.tasks.map((task: any) => {
     return {
       id: task.id,
@@ -55,7 +54,7 @@ export default async function Page() {
   const user = await currentUser();
   // const data = await getData(user.emailAddresses[0].emailAddress);
   const data = await getData("jeffooi@tamu.edu")
-  console.log(data)
+  // console.log(data)
 
   return (
     <main className='container mx-auto py-10 min-h-screen flex flex-col gap-12 items-center'>

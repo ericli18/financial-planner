@@ -10,6 +10,7 @@ export default function Form() {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -49,7 +50,8 @@ export default function Form() {
         dueDateTime: dayjs(data.dueDate).format(),
       }),
     });
-    await revalidate();
+    revalidate();
+    reset();
     console.log(response2);
   };
 
