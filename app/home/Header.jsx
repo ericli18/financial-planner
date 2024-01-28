@@ -41,7 +41,7 @@ export default async function Header() {
       <Link href='/home'>Home</Link>
       <HeaderForm userId={id}/>
       <div className='flex gap-8 justify-end'>
-        <HeaderDropdown groups={groups}/>
+        <HeaderDropdown groups={groups} id={id}/>
         <div className="w-full center-flex">
           <ClerkLoading>
             <div className="h-4 w-4"></div>

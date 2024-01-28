@@ -18,19 +18,22 @@ import {
 } from "@/components/Dialog";
 import { Label } from "@/components/Label";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { createNewGroup } from './action'
+import { createNewGroup, joinGroup } from './action'
 
-const HeaderDropdown = ({ groups }) => {
+const HeaderDropdown = ({ groups, id }) => {
   const {register, handleSubmit, watch, reset, formState: {errors}} = useForm();
 
   const url = process.env.REACT_APP_URL || "http://localhost:9000";
 
   const createGroup = async (initialData) => {
     await createNewGroup(initialData.name, initialData.password);
+    // reset();
   }
 
-  const joinGroup = async (initialData) => {
+  const joinGroupFunc = async (initialData) => {
     console.log(initialData);
+    await joinGroup(initialData.joinPassword, id);
+    // reset();
   }
 
   return (
@@ -82,8 +85,15 @@ const HeaderDropdown = ({ groups }) => {
                   Join an existing Group using a Password
                 </DialogDescription>
               </DialogHeader>
-              <Label>Password</Label>
-              <Input id='password' />
+              <form
+                onSubmit={handleSubmit(joinGroupFunc)} className="flex flex-col gap-4"
+              >
+                <Label>Password</Label>
+                <Input id='password' {...register("joinPassword", { required: true})} />
+                <DialogClose asChild>
+                  <Button type='submit'>Submit</Button>
+                </DialogClose>
+              </form>
             </DialogContent>
           </Dialog>
         </DropdownMenuItem>

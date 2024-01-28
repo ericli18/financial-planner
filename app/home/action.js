@@ -35,3 +35,27 @@ export const createNewGroup = async (name, password) => {
   
   redirect(`/home/group/${id}`)
 };
+
+export const joinGroup = async (password, id) => {
+  const url = 'http://localhost:9000';
+  var response = await fetch(url+'/getAllGroups');
+  var res = await response.json();
+  var groups = res.groups.map((group) => {
+    return {password: `${group.id}${group.password}`, id: group.id};
+  })
+
+  groups.filter((group) => {
+    return group.password === password;
+  });
+  console.log(groups);
+  if (groups.length > 0) {
+    await fetch(url+'/addGroupToUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({groupId: groups[0].id, userId: id})
+    })
+    redirect(`/home/group/${groups[0].id}`);
+  }
+}
