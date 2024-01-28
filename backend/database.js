@@ -335,14 +335,16 @@ async function copyGroupTemplateToUser(groupId, userId) {
                 }
             })
         tasks = tasks.filter((task) => !(task.id in addedTasks));
-        var date = new Date(task['due_date_time']).toISOString.slice(0, 19).replace('T', ' ');
         if (tasks.length > 0) {
-            var queryString = "(INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES (";
+            var queryString = "INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES (";
             for (const task of tasks) {
+                var date = new Date(task['due_date_time']).toISOString().slice(0, 19).replace('T', ' ');
+
                 queryString += id + ', \'' + task['class'] + "\', \'" + task['name'] + "\', \'" + date + "\', false),(";
             }
             // remove extra ",("
             queryString = queryString.substring(0, queryString.length-2) + ";";
+            console.log(queryString)
             await pool
                 .query(
                     queryString
