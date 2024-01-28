@@ -4,8 +4,6 @@ import Form from "./EventForm"
 import { currentUser } from '@clerk/nextjs';
 
 async function getData(): Promise<Todo[]> {
-  const user = await currentUser();
-  console.log(user);
   return [
     {
       class: "Math",
@@ -32,9 +30,9 @@ export default async function Page() {
   const data = await getData()
 
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={defaultColumns} data={data} />
+    <main className="container mx-auto py-10 min-h-screen flex flex-col gap-12 items-center">
       <Form />
-    </div>
+      <DataTable columns={defaultColumns} data={data} />
+    </main>
   )
 }

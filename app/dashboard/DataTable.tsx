@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
 import {
   ColumnDef,
@@ -9,7 +9,7 @@ import {
   useReactTable,
   getSortedRowModel,
   Row,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
 import {
   Table,
@@ -18,18 +18,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./Table"
+} from "./Table";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState([])
+  const [sorting, setSorting] = useState([]);
 
   const table = useReactTable({
     data,
@@ -40,26 +40,26 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
     },
-  })
+  });
 
   const getColor = (row: Row<TData>) => {
-    const className = row.getValue("class")
+    const className = row.getValue("class");
     switch (className) {
       case "Math":
-        return "bg-red-50"
+        return "bg-red-100";
       case "English":
-        return "bg-green-50"
+        return "bg-green-100";
       case "Science":
-        return "bg-blue-50"
+        return "bg-blue-100";
       case "History":
-        return "bg-yellow-50"
+        return "bg-yellow-100";
       default:
-        return "bg-white"
+        return "bg-white";
     }
-  }
+  };
 
   return (
-    <div className="rounded-md border">
+    <div className='rounded-md border min-w-full'>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -74,7 +74,7 @@ export function DataTable<TData, TValue>({
                           header.getContext()
                         )}
                   </TableHead>
-                )
+                );
               })}
             </TableRow>
           ))}
@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
                 className={getColor(row)}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} >
+                  <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -96,7 +96,7 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={columns.length} className='h-24 text-center'>
                 No results.
               </TableCell>
             </TableRow>
@@ -104,5 +104,5 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }
