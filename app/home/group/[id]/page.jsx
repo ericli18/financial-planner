@@ -1,6 +1,6 @@
-import { DataTable } from "@/app/home/dashboard/DataTable";
-import { defaultColumns, Todo } from "@/app/home/dashboard/Columns";
-import Form from "@/app/home/dashboard/EventForm";
+import { DataTable } from "@/app/home/DataTable";
+import { defaultColumns, Todo } from "@/app/home/Columns";
+import Form from "@/app/home/EventForm";
 
 async function getData() {
   return [
