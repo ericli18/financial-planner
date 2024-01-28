@@ -63,18 +63,18 @@ export default function Form() {
         placeholder='Class'
         {...register("className", { required: true })}
       />
-      {errors.className && <span>This field is required</span>}
+      {/* {errors.className && <span>This field is required</span>} */}
       <Input
         placeholder='Assignment'
         {...register("assignment", { required: true })}
       />
-      {errors.exampleRequired && <span>This field is required</span>}
+      {/* {errors.exampleRequired && <span>This field is required</span>} */}
       <Input
         type='datetime-local'
         defaultValue={dayjs().format("YYYY-MM-DDTHH:mm")}
         {...register("dueDate", { required: true })}
       />
-      {errors.exampleRequired && <span>This field is required</span>}
+      {/* {errors.exampleRequired && <span>This field is required</span>} */}
 
       <Button type='submit'>Add task</Button>
     </form>
