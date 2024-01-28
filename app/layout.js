@@ -5,7 +5,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Just To-Do It",
+  title: "taskademic",
   description: "An enhanced to-do list tailored towards students",
 };
 
