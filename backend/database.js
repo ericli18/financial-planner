@@ -355,11 +355,12 @@ async function toggleTask(taskId) {
 }
 
 async function addPersonalTask(personalTemplateId, className, name, dueDateTime) {
+    var date = new Date(dueDateTime).toISOString().slice(0,19).replace('T', ' ');
     try {
         await pool
             .query(
                 'INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES ' +
-                "(" + personalTemplateId + ", \'" + className + ", \'" + name + "\', \'" + dueDateTime + "\', false);"
+                "(" + personalTemplateId + ", \'" + className + "\', " + name + "\', \'" + date + "\', false);"
             )
         return true;
     }
@@ -426,10 +427,11 @@ async function updateTaskName(taskId, newName) {
 }
 
 async function updateTaskDueDateTime(taskId, newDateTime) {
+    var date = new Date(newDateTime).toISOString().slice(0,19).replace('T', ' ');
     try {
         await pool
             .query(
-                "UPDATE tasks SET due_date_time = \'" + newDateTime + "\' WHERE id = " + taskId + ";"
+                "UPDATE tasks SET due_date_time = \'" + date + "\' WHERE id = " + taskId + ";"
             )
         return true;
     }
@@ -482,10 +484,11 @@ async function updatePersonalTaskName(personalTaskId, newName) {
 }
 
 async function updatePersonalTaskDueDateTime(personalTaskId, newDateTime) {
+    var date = new Date(newDateTime).toISOString().slice(0,19).replace('T', ' ');
     try {
         await pool
             .query(
-                "UPDATE personal_tasks SET due_date_time = \'" + newDateTime + "\' WHERE id = " + personalTaskId + ";"
+                "UPDATE personal_tasks SET due_date_time = \'" + date + "\' WHERE id = " + personalTaskId + ";"
             )
         return true;
     }
