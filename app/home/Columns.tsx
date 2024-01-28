@@ -21,7 +21,6 @@ export const defaultColumns = [
     id: "Completed",
     cell: ({ row }) => {
       const serverId = row.original.id;
-      console.log(serverId);
 
       return (
         <div className=''>
@@ -43,7 +42,6 @@ export const defaultColumns = [
       return (
         <button
           onClick={() => {
-            console.log(column.getIsSorted());
             column.toggleSorting(column.getIsSorted() === "asc");
           }}
         >

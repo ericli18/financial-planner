@@ -11,8 +11,7 @@ import {
 import Link from "next/link"; // Import Link from Next.js
 
 async function getData(email: string): Promise<Todo[]> {
-  console.log(email)
-  const url = "http://localhost:9000"
+  const url = "http://localhost:9000" //TODO: change
   const response = await fetch(`${url}/getUserFromEmail`, {
     method: "POST",
     headers: {
@@ -31,19 +30,13 @@ async function getData(email: string): Promise<Todo[]> {
   });
   const data1 = await response1.json();
   console.log(data1)
-  // return [{
-  //   id: 1,
-  //   class: "Math",
-  //   assignment: "HW 1",
-  //   dueDate: "2021-09-01",
-  //   completed: false,
-  // }];
   const response2 = await fetch(`${url}/getTasksForPersonalTemplate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ groupId: data1.templates[0].id}),
+    next: { tags: ['todos'] }
   });
   const data2 = await response2.json();
   console.log(data2)
