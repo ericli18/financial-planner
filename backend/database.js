@@ -615,7 +615,7 @@ async function addTaskToTemplate(groupId, className, name, dueDateTime) {
         let newDateTime = date.toISOString().slice(0,19).replace('T', ' ');
         await pool
             .query(
-                "INSERT INTO tasks (groupId, class, name, due_date_time, finished) VALUES "+
+                "INSERT INTO tasks (group_id, class, name, due_date_time, finished) VALUES "+
                 "(" + groupId + ", \'" + className + "\', \'" + name + "\', \'" + newDateTime + "\', false);"
             );
         return true;

@@ -1,6 +1,6 @@
 import { DataTable } from "@/app/home/DataTable";
 import { defaultColumns, Todo } from "@/app/home/Columns";
-import Form from "@/app/home/EventForm";
+import Form from "./EventForm";
 import dayjs from "dayjs";
 
 const url = process.env.REACT_URL || "http://localhost:9000";
@@ -32,6 +32,7 @@ async function getData(id) {
       assignment: task.name,
       dueDate: dayjs(task.due_date_time).format(),
       completed: task.finished,
+      personal: false
     }
   });
   return ret;
@@ -46,7 +47,7 @@ export default async function Page({ params }) {
   return (
     <div className='container mx-auto py-10 min-h-screen flex flex-col gap-12 items-center'>
       <h1>Tasks for {tasks.group.name}</h1>
-      {/* <Form /> */}
+      <Form id={id}/>
       <DataTable columns={defaultColumns} data={tasks.tasks} />
     </div>
   );
