@@ -176,6 +176,12 @@ app.post('/getTasksInRange', async (req, res) => {
     res.json({updateSuccess});
 })
 
+app.post('/getGroup', async (req, res) => {
+    let request = req.body;
+    const group = await getGroup(request['id']);
+    res.json({group});
+})
+
 const pool = new Pool({
     user: process.env.PSQL_USER,
     host: process.env.PSQL_HOST,
@@ -198,6 +204,21 @@ async function getUserFromEmail(email) {
         console.log(error);
     }
     return user;
+}
+
+async function getGroup(id) {
+    var group = null;
+    try {
+        await pool
+            .query('SELECT * FROM groups WHERE id = ' + id + ";")
+            .then((query_res) => {
+                group = query_res.rows[0];
+            })
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return group;
 }
 
 async function kickUser(userId, groupId) {
@@ -575,7 +596,7 @@ async function getAllTasksForTemplate(groupId) {
     try {
         await pool
             .query(
-                "SELECT * FROM tasks WHERE template_id = " + groupId + ";"
+                "SELECT * FROM tasks WHERE group_id = " + groupId + ";"
             ).then((query_res) => {
                 for (let i = 0; i < query_res.rowCount; ++i) {
                     tasks.push(query_res.rows[i]);
