@@ -34,7 +34,7 @@ app.post('/addUser', async (req, res) => {
 
 app.post('/addTaskToTemplate', async (req, res) => {
     let request = req.body;
-    const updateSuccess = await addTaskToTemplate(request['groupId'], request['name'], request['dueDateTime']);
+    const updateSuccess = await addTaskToTemplate(request['groupId'], request['class'], request['name'], request['dueDateTime']);
     res.json({updateSuccess});
 })
 
@@ -124,7 +124,7 @@ app.post('/kickUser', async (req, res) => {
 
 app.post('/addPersonalTask', async (req, res) => {
     let request = req.body;
-    const updateSuccess = await addPersonalTask(request['personalTemplateId'], request['name'], request['dueDateTime']);
+    const updateSuccess = await addPersonalTask(request['personalTemplateId'], request['class'], request['name'], request['dueDateTime']);
     res.json({updateSuccess});
 })
 
@@ -161,6 +161,18 @@ app.post('/toggleFinishedTask', async (req, res) => {
 app.post('/toggleFinishedPersonalTask', async (req, res) => {
     let request = req.body;
     const updateSuccess = await togglePersonalTask(request['personalTaskId']);
+    res.json({updateSuccess});
+})
+
+app.post('/getTasksInRange', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = false;
+    if (request['daysForward'] != undefined) {
+        updateSuccess = await getTasksInRange(request['userId'], request['daysForward']);
+    }
+    else {
+        updateSuccess = await getTasksInRange(request['userId']);
+    }
     res.json({updateSuccess});
 })
 
@@ -297,11 +309,10 @@ async function copyGroupTemplateToUser(groupId, userId) {
         if (tasks.length > 0) {
             var queryString = "(INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES (";
             for (const task of tasks) {
-                queryString += groupId + ', \'' + task['class'] + "\', " + ', \'' + task['name'] + "\', " + task['due_date_time'] + ", false,";
+                queryString += groupId + ', \'' + task['class'] + "\', " + ', \'' + task['name'] + "\', \'" + task['due_date_time'] + "\', false),(";
             }
-            // remove extra ","
-            queryString = queryString.substring(0, queryString.length-1);
-            queryString += ");";
+            // remove extra ",("
+            queryString = queryString.substring(0, queryString.length-2) + ");";
             await pool
                 .query(
                     queryString
@@ -343,12 +354,12 @@ async function toggleTask(taskId) {
     return false;
 }
 
-async function addPersonalTask(personalTemplateId, className, name, dueDateTime, finished) {
+async function addPersonalTask(personalTemplateId, className, name, dueDateTime) {
     try {
         await pool
             .query(
                 'INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES ' +
-                "(" + personalTemplateId + ", \'" + className + ", \'" + name + "\', " + dueDateTime + ", " + finished + ");"
+                "(" + personalTemplateId + ", \'" + className + ", \'" + name + "\', \'" + dueDateTime + "\', false);"
             )
         return true;
     }
@@ -418,7 +429,7 @@ async function updateTaskDueDateTime(taskId, newDateTime) {
     try {
         await pool
             .query(
-                "UPDATE tasks SET due_date_time = " + newDateTime + " WHERE id = " + taskId + ";"
+                "UPDATE tasks SET due_date_time = \'" + newDateTime + "\' WHERE id = " + taskId + ";"
             )
         return true;
     }
@@ -474,7 +485,7 @@ async function updatePersonalTaskDueDateTime(personalTaskId, newDateTime) {
     try {
         await pool
             .query(
-                "UPDATE personal_tasks SET due_date_time = " + newDateTime + " WHERE id = " + personalTaskId + ";"
+                "UPDATE personal_tasks SET due_date_time = \'" + newDateTime + "\' WHERE id = " + personalTaskId + ";"
             )
         return true;
     }
@@ -574,14 +585,14 @@ async function getAllTasksForTemplate(groupId) {
     return tasks;
 }
 
-async function addTaskToTemplate(groupId, className, name, dueDateTime, finished) {
+async function addTaskToTemplate(groupId, className, name, dueDateTime) {
     try {
         let date = new Date(dueDateTime);
         let newDateTime = date.toISOString().slice(0,19).replace('T', ' ');
         await pool
             .query(
                 "INSERT INTO tasks (groupId, class, name, due_date_time, finished) VALUES "+
-                "(" + groupId + ", \'" + className + "\', \'" + name + "\', \'" + newDateTime + "\', " + finished +");"
+                "(" + groupId + ", \'" + className + "\', \'" + name + "\', \'" + newDateTime + "\', false);"
             );
         return true;
     }
@@ -589,6 +600,29 @@ async function addTaskToTemplate(groupId, className, name, dueDateTime, finished
         console.log(error);
         return false;
     }
+}
+
+async function getTasksInRange(userId, daysForward = 3) {
+    var date = new Date();
+    date.setDate(date.getDate() + daysForward);
+    date.setHours(0,0,0,0);
+    date = date.toISOString().slice(0,19).replace('T', ' ');
+    var tasks = [];
+    try {
+        await pool
+            .query(
+                'SELECT * FROM personal_tasks WHERE personal_template_id in (SELECT id FROM personal_templates where user_id = ' + userId + ")" +
+                "AND due_date_time < TIMESTAMP \'" + date + ' AND NOT finished ORDER BY due_date_time;'
+            ).then((query_res) => {
+                for (let i = 0; i < query_res.rowCount; ++i) {
+                    tasks.push(query_res.rows[i]);
+                }
+            })
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return tasks;
 }
 
 process.on('SIGINT', function() {
