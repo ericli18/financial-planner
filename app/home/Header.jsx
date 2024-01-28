@@ -39,7 +39,7 @@ export default async function Header() {
   return (
     <nav className='min-w-full flex justify-between shadow-sm px-12 py-4'>
       <Link href='/home'>Home</Link>
-      <HeaderForm />
+      <HeaderForm userId={id}/>
       <div className='flex gap-8 justify-end'>
         <HeaderDropdown groups={groups}/>
         <div className="w-full center-flex">
