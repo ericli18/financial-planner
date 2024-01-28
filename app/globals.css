@@ -79,3 +79,56 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+
+.signInButton {
+  background-color: #4caf50; /* Green background */
+  color: white; /* White text */
+  padding: 15px 32px; /* Padding around the text */
+  text-align: center; /* Centered text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Inline-block display */
+  font-size: 16px; /* Font size */
+  margin: 4px 2px; /* Margin */
+  cursor: pointer; /* Pointer cursor on hover */
+  border: none; /* No border */
+  border-radius: 8px; /* Rounded corners */
+}
+
+.userButton {
+  background-color: #008cba; /* Blue background */
+  color: white; /* White text */
+  padding: 15px 32px; /* Padding */
+  text-align: center; /* Centered text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Inline-block display */
+  font-size: 16px; /* Font size */
+  margin: 4px 2px; /* Margin */
+  cursor: pointer; /* Pointer cursor on hover */
+  border: none; /* No border */
+  border-radius: 8px; /* Rounded corners */
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+  min-height: 100vh; /* Full viewport height */
+  padding: 24px;
+}
+
+.centeredTitle {
+  font-size: 48px; /* Larger font size */
+  font-weight: bold; /* Bolder text */
+  margin-bottom: 20px; /* Adjust as needed */
+}
+
+
+
+.signInContainer {
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  width: 100%; /* Full width */
+  padding: 10px; /* Optional padding */
+}
