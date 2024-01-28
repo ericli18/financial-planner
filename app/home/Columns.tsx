@@ -1,6 +1,7 @@
 "use client";
 
 import { createColumnHelper, sortingFns } from "@tanstack/react-table";
+import { deleteTodo } from "./action";
 
 import dayjs from "dayjs";
 
@@ -56,8 +57,9 @@ export const defaultColumns = [
   }),
   columnHelper.display({
     id: "More",
-    cell: () => {
-      return <MoreHorizontal className='h-4 w-4' />;
+    cell: ({row}) => {
+      const serverId = row.original.id;
+      return <MoreHorizontal className='h-4 w-4' onClick={() => deleteTodo(serverId)}/>;
     },
   }),
   // columnHelper.display({
