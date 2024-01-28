@@ -603,7 +603,7 @@ async function addGroupToUser(groupId, userId) {
         await pool
             .query(
                 "INSERT INTO user_permissions (user_id, group_id, permission) VALUES " +
-                "(" + userId + ", " + groupId, + ", true);"
+                "(" + userId + ", " + groupId + ", true);"
             )
         return true;
     }
