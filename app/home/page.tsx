@@ -46,6 +46,7 @@ async function getData(email: string): Promise<Todo[]> {
       assignment: task.name,
       dueDate: dayjs(task.due_date_time).format(),
       completed: task.finished,
+      personal: true,
     }
   })
 }

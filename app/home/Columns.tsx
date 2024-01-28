@@ -13,6 +13,7 @@ export type Todo = {
   assignment: string;
   dueDate: string;
   completed: boolean;
+  personal: boolean;
 };
 
 const columnHelper = createColumnHelper<Todo>();
@@ -62,10 +63,11 @@ export const defaultColumns = [
     id: "More",
     cell: ({ row }) => {
       const serverId = row.original.id;
+      const personal = row.original.personal;
       return (
         <MoreHorizontal
           className='h-4 w-4'
-          onClick={() => deleteTodo(serverId)}
+          onClick={() => deleteTodo(serverId, personal)}
         />
       );
     },
