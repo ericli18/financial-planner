@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 @layer base {
   :root {
@@ -80,7 +81,6 @@
   }
 }
 
-
 .signInButton {
   background-color: #4caf50; /* Green background */
   color: white; /* White text */
@@ -93,6 +93,11 @@
   cursor: pointer; /* Pointer cursor on hover */
   border: none; /* No border */
   border-radius: 8px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.signInButton:hover {
+  background-color: #3e8e41; /* Darker green background on hover */
 }
 
 .userButton {
@@ -110,6 +115,8 @@
 }
 
 .mainContainer {
+  background: linear-gradient(to bottom, #e6f8fe, #c8e9fd); /* Blue gradient from light to dark */
+  color: black;
   display: flex;
   flex-direction: column;
   justify-content: center; /* Center vertically */
@@ -147,4 +154,8 @@
   border: none; /* No border */
   cursor: pointer; /* Pointer cursor on hover */
   font-size: 16px; /* Font size */
+}
+
+body, button, input, textarea {
+  font-family: 'Roboto', sans-serif;
 }
