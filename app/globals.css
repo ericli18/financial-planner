@@ -159,3 +159,7 @@
 body, button, input, textarea {
   font-family: 'Roboto', sans-serif;
 }
+
+.center-text {
+  text-align: center;
+}

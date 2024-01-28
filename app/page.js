@@ -1,3 +1,5 @@
+/*sign in page */
+
 import React from 'react';
 import { SignInButton, UserButton, currentUser } from '@clerk/nextjs';
 import './globals.css'; // Import the stylesheet
@@ -11,7 +13,7 @@ export default async function Home() {
   }
   return (
     <main className="mainContainer">
-      <h1 className="centeredTitle">Enhanced To-Do Lists</h1>
+      <h1 className="centeredTitle">Just To-Do It</h1>
       {!user && <SignInButton className="signInButton" />}
       <UserButton className="userButton" afterSignOutUrl="/" />
     </main>

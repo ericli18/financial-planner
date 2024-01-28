@@ -54,12 +54,16 @@ export function DataTable<TData, TValue>({
     const className = row.getValue("class");
     switch (className) {
       case "Math":
+      case "math":
         return "bg-red-100 hover:bg-red-200";
       case "Science":
+      case "science":
         return "bg-green-100 hover:bg-green-200";
       case "History":
+      case "history":
         return "bg-blue-100 hover:bg-blue-200";
       case "English":
+      case "english":
         return "bg-yellow-100 hover:bg-yellow-200";
       default:
         return "bg-white hover:bg-gray-100";

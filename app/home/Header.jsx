@@ -2,6 +2,9 @@ import Link from "next/link";
 import { currentUser, UserButton, SignInButton } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./Dropdown";
+import { DropdownMenuItemIndicator, DropdownMenuSeparator } from "./Dropdown";
+import '../globals.css'; // Import the stylesheet
+
 
 const url = process.env.REACT_APP_URL || "http://localhost:9000";
 
@@ -48,6 +51,17 @@ export default async function Header() {
                 )
               })
             }
+            <DropdownMenuSeparator />
+            <Link href = {'home/add'}>
+              <DropdownMenuItem className = 'center-text'>
+                Add
+              </DropdownMenuItem>
+            </Link>
+            <Link href = {'/home/join'}>
+              <DropdownMenuItem className = 'center-text'>
+                Join
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
         <UserButton />
