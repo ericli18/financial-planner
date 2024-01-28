@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
 
-export default function HeaderForm() {
+export default function HeaderForm({userId}) {
   const {
     register,
     handleSubmit,
@@ -16,8 +16,19 @@ export default function HeaderForm() {
   const url = process.env.REACT_APP_URL || "http://localhost:9000";
 
   const onSubmit = async (initialData) => {
-    const groupName = initialData.groupName;
-    console.log(groupName);
+    const str = initialData.groupName;
+    const regex = /#(\d+)(?!.*#\d)/;
+    const match = str.match(regex);
+    console.log(match[1], userId)
+    const groupRes = await fetch(`${url}/addTemplateToUser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ groupId: match[1], userId: userId}),
+    });
+    console.log(groupRes)
+    console.log(match[1]);
   };
 
   return (
