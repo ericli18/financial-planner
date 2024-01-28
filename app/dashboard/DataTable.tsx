@@ -9,6 +9,9 @@ import {
   useReactTable,
   getSortedRowModel,
   Row,
+  ColumnFiltersState,
+  getFilteredRowModel,
+  SortingState,
 } from "@tanstack/react-table";
 
 import {
@@ -20,6 +23,8 @@ import {
   TableRow,
 } from "./Table";
 
+import { Input } from "./Input";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -29,16 +34,19 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState([]);
-
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
+      columnFilters,
     },
   });
 
@@ -60,6 +68,16 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className='rounded-md border min-w-full'>
+      <div className='flex items-center py-4'>
+        <Input
+          placeholder='Filter classes...'
+          value={(table.getColumn("class")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("class")?.setFilterValue(event.target.value)
+          }
+          className='max-w-sm'
+        />
+      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
