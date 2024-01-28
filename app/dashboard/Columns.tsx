@@ -1,12 +1,11 @@
 "use client";
 
-import {
-  createColumnHelper, sortingFns,
-} from "@tanstack/react-table";
+import { createColumnHelper, sortingFns } from "@tanstack/react-table";
 
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 export type Todo = {
+  id: number;
   class: string;
   assignment: string;
   dueDate: string;
@@ -14,44 +13,57 @@ export type Todo = {
 };
 
 const columnHelper = createColumnHelper<Todo>();
-  
+
 export const defaultColumns = [
-    columnHelper.accessor("class", {
-      header: () => "Class",
-    }),
-    columnHelper.accessor("assignment", {
-      header: () => "Assignment",
-    }),
-    columnHelper.accessor("dueDate", {
-      sortingFn: sortingFns.datetime,
-      header: ({column}) => {
-        return (
-          <button
-            onClick={() => {
-              console.log(column.getIsSorted());
-              column.toggleSorting(column.getIsSorted() === "asc");
-            }}
-          >
-            Due Date
-            <ArrowUpDown className='ml-2 h-4 w-4' />
-          </button>
-        );
-      },
-    }),
-    columnHelper.display({
-      id: "Completed",
-      cell: (props) => {
-        return <input type='checkbox'></input>;
-      },
-      header: () => "Finished?",
-    }),
-    // columnHelper.display({
-    //   id: "Remove",
-    //   cell: ({ row }) => {
-    //     const remove = () => {
-    //       setData(data.filter((todo) => todo !== row.original));
-    //     };
-    //     return <button onClick={remove}>Remove</button>;
-    //   },
-    // }),
-  ];
+  columnHelper.display({
+    id: "Completed",
+    cell: ({ row }) => {
+      const serverId = row.original.id;
+      console.log(serverId);
+
+      return (
+        <div className=''>
+          <input type='checkbox'></input>
+        </div>
+      );
+    },
+    header: () => "Finished?",
+  }),
+  columnHelper.accessor("class", {
+    header: () => "Class",
+  }),
+  columnHelper.accessor("assignment", {
+    header: () => "Assignment",
+  }),
+  columnHelper.accessor("dueDate", {
+    sortingFn: sortingFns.datetime,
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => {
+            console.log(column.getIsSorted());
+            column.toggleSorting(column.getIsSorted() === "asc");
+          }}
+        >
+          Due Date
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </button>
+      );
+    },
+  }),
+  columnHelper.display({
+    id: "More",
+    cell: () => {
+      return <MoreHorizontal className='h-4 w-4' />;
+    },
+  }),
+  // columnHelper.display({
+  //   id: "Remove",
+  //   cell: ({ row }) => {
+  //     const remove = () => {
+  //       setData(data.filter((todo) => todo !== row.original));
+  //     };
+  //     return <button onClick={remove}>Remove</button>;
+  //   },
+  // }),
+];
