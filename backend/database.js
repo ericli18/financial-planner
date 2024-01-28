@@ -317,15 +317,18 @@ async function copyGroupTemplateToUser(groupId, userId) {
             .then((query_res) => {
                 group = query_res.rows[0];
             })
+        var id = 0;
         await pool
             .query(
                 'INSERT INTO personal_templates (group_id, user_id, name, last_edited) VALUES ' + 
-                "("+ groupId + ", " + userId + ", \'" + group['name'] + "\', LOCALTIMESTAMP);"
-            )
+                "("+ groupId + ", " + userId + ", \'" + group['name'] + "\', LOCALTIMESTAMP); SELECT MAX(id) FROM personal_templates;"
+            ).then((query_res) => {
+                id = query_res[1].rows[0].max;;
+            })
         var addedTasks = [];
         await pool
             .query(
-                'SELECT * FROM personal_tasks WHERE personal_template_id in (SELECT MAX(id) FROM personal_templates);'
+                'SELECT * FROM personal_tasks WHERE personal_template_id =' + id + ';'
             ).then((query_res) => {
                 for (let i = 0; i < query_res.rowCount; ++i) {
                     addedTasks.push(query_res.rows[i].id);
@@ -335,7 +338,7 @@ async function copyGroupTemplateToUser(groupId, userId) {
         if (tasks.length > 0) {
             var queryString = "(INSERT INTO personal_tasks (personal_template_id, class, name, due_date_time, finished) VALUES (";
             for (const task of tasks) {
-                queryString += groupId + ', \'' + task['class'] + "\', " + ', \'' + task['name'] + "\', \'" + task['due_date_time'] + "\', false),(";
+                queryString += id + ', \'' + task['class'] + "\', \'" + task['name'] + "\', \'" + task['due_date_time'] + "\', false),(";
             }
             // remove extra ",("
             queryString = queryString.substring(0, queryString.length-2) + ");";
@@ -568,16 +571,20 @@ async function addUser(username, email) {
 }
 
 async function addGroup(name, password) {
+    var id = 0;
     try {
         await pool
             .query(
                 "INSERT INTO groups (name, password, last_edited) VALUES" +
-                "(\'" + name + "\', \'" + password + "\', LOCALTIMESTAMP);"
-            );
-        return true;
+                "(\'" + name + "\', \'" + password + "\', LOCALTIMESTAMP); SELECT MAX(id) FROM groups;"
+            ).then((query_res) => {
+                console.log(query_res[1].rows);
+                id = query_res[1].rows[0].max;
+            });
+        return id;
     }
     catch (error) {
-        return false;
+        return id;
     }
 }
 
