@@ -27,8 +27,6 @@ app.post('/getUserPermissionsForGroup', async (req, res) => {
 })
 
 app.post('/addUser', async (req, res) => {
-    // to send data
-    // JSON.stringify({username: username, email: email});
     let request = req.body;
     const updateSuccess = await addUser(request['username'], request['email']);
     res.json({updateSuccess});
@@ -70,6 +68,60 @@ app.post('/getTasksForPersonalTemplate', async (req, res) => {
     res.json({tasks});
 })
 
+app.post('/addGroupToUser', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await addGroupToUser(request['groupId'], request['userId']);
+    res.json({updateSuccess});
+})
+
+app.post('/getAllPersonalTemplatesForUser', async (req, res) => {
+    let request = req.body;
+    const templates = await getAllPersonalTemplatesForUser(request['userId']);
+    res.json({templates});
+})
+
+app.post('/updateGroupName', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await updateGroupName(request['groupId'], request['name']);
+    res.json({updateSuccess});
+})
+
+app.post('/updateTaskName', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await updateTaskName(request['taskId'], request['name'])
+    res.json({updateSuccess});
+})
+
+app.post('/updateTaskDueDateTime', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await updateTaskDueDateTime(request['taskId'], request['dueDateTime']);
+    res.json({updateSuccess});
+})
+
+app.post('/updatePersonalTemplateName', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await updatePersonalTemplateName(request['personalTemplateId'], request['name']);
+    res.json({updateSuccess});
+})
+
+app.post('/updatePersonalTaskName', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await updatePersonalTaskName(request['personalTaskId'], request['name']);
+    res.json({updateSuccess});
+})
+
+app.post('/updatePersonalTaskDueDateTime', async (req, res) => {
+    let request = req.body;
+    const updateSuccess = await updatePersonalTaskDueDateTime(request['personalTaskId'], request['name']);
+    res.json({updateSuccess});
+})
+
+app.post('/kickUser', async (req, res) => {
+    let request = req.body;
+    const kickSuccess = await kickUser(request['userId'], request['groupId']);
+    res.json({updateSuccess});
+})
+
 const pool = new Pool({
     user: process.env.PSQL_USER,
     host: process.env.PSQL_HOST,
@@ -92,6 +144,20 @@ async function getUserFromEmail(email) {
         console.log(error);
     }
     return user;
+}
+
+async function kickUser(userId, groupId) {
+    try {
+        await pool
+            .query(
+                'DELETE FROM user_permissions WHERE user_id = ' + userId + 'AND group_id = ' + groupId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
 }
 
 async function getAllGroupsForUser(userId) {
@@ -181,6 +247,90 @@ async function copyGroupTemplateToUser(groupId, userId) {
     return false;
 }
 
+async function updateGroupName(groupId, newName) {
+    try {
+        await pool
+            .query(
+                "UPDATE groups SET name = \'" + newName + "\' WHERE id = " + groupId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function updateTaskName(taskId, newName) {
+    try {
+        await pool
+            .query(
+                "UPDATE tasks SET name = \'" + newName + "\' WHERE id = " + taskId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function updateTaskDueDateTime(taskId, newDateTime) {
+    try {
+        await pool
+            .query(
+                "UPDATE tasks SET due_date_time = " + newDateTime + " WHERE id = " + taskId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function updatePersonalTemplateName(personalTemplateId, newName) {
+    try {
+        await pool
+            .query(
+                "UPDATE personal_templates SET name = \'" + newName + "\' WHERE id = " + personalTemplateId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function updatePersonalTaskName(personalTaskId, newName) {
+    try {
+        await pool
+            .query(
+                "UPDATE personal_tasks SET name = \'" + newName + "\' WHERE id = " + personalTaskId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
+async function updatePersonalTaskDueDateTime(personalTaskId, newDateTime) {
+    try {
+        await pool
+            .query(
+                "UPDATE personal_tasks SET due_date_time = " + newDateTime + " WHERE id = " + personalTaskId + ";"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
+
 async function getUserPermissionsForGroup(userId, groupId) {
     var permission = null;
     try {
@@ -224,6 +374,20 @@ async function addGroup(name, password) {
     }
 }
 
+async function addGroupToUser(groupId, userId) {
+    try {
+        await pool
+            .query(
+                "INSERT INTO user_permissions (user_id, group_id, permission) VALUES " +
+                "(" + userId + ", " + groupId, + ", true);"
+            )
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return false;
+}
 
 async function getAllTasksForTemplate(groupId) {
     var tasks = [];
