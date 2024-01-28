@@ -2,6 +2,8 @@
 
 import { createColumnHelper, sortingFns } from "@tanstack/react-table";
 
+import dayjs from "dayjs";
+
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 export type Todo = {
@@ -31,7 +33,6 @@ export const defaultColumns = [
   }),
   columnHelper.accessor("class", {
     header: () => "Class",
-    enableHiding: true,
   }),
   columnHelper.accessor("assignment", {
     header: () => "Assignment",
@@ -51,6 +52,9 @@ export const defaultColumns = [
         </button>
       );
     },
+    cell: ({ row }) => {
+      return <div>{dayjs(row.original.dueDate).format('MM/DD/YYYY HH:mm')}</div>;
+    }
   }),
   columnHelper.display({
     id: "More",
