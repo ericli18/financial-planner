@@ -160,6 +160,8 @@ body, button, input, textarea {
   font-family: 'Roboto', sans-serif;
 }
 
-.center-text {
-  text-align: center;
+.center-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
