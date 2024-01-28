@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./Dropdown";
 import { DropdownMenuItemIndicator, DropdownMenuSeparator } from "./Dropdown";
 import '../globals.css'; // Import the stylesheet
+import HeaderForm from "./HeaderForm"
 
 
 const url = process.env.REACT_APP_URL || "http://localhost:9000";
@@ -35,8 +36,8 @@ export default async function Header() {
   return (
     <nav className="min-w-full flex justify-between shadow-sm px-12 py-4">
       <Link href ='/home'>Home</Link>
+      <HeaderForm />
       <div className="flex gap-8 justify-end">
-        {/* <Link href='/home/groups'>Groups</Link> */}
         <DropdownMenu>
           <DropdownMenuTrigger>Groups</DropdownMenuTrigger>
           <DropdownMenuContent>
