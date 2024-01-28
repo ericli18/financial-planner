@@ -33,7 +33,7 @@ export default function Form() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className='flex flex-wrap items-center justify-center'
+      className='flex items-center justify-center'
       style={{maxWidth: 80 + "%"}}
     >
       <Input
