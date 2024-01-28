@@ -272,7 +272,7 @@ async function getAllTasksForPersonalTemplate(personalGroupId) {
                 'SELECT * FROM personal_tasks WHERE personal_template_id = ' + personalGroupId + ';'
             ).then((query_res) => {
                 for (let i = 0; i < query_res.rowCount; ++i) {
-                    tasks.push(express.query.rows[i]);
+                    tasks.push(query_res.rows[i]);
                 }
             })
     }
