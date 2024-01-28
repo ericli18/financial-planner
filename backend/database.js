@@ -167,7 +167,7 @@ app.post('/toggleFinishedPersonalTask', async (req, res) => {
 app.post('/getTasksInRange', async (req, res) => {
     let request = req.body;
     const updateSuccess = false;
-    if (request['daysForward'] != undefined) {
+    if (request['daysForward'] !== undefined) {
         updateSuccess = await getTasksInRange(request['userId'], request['daysForward']);
     }
     else {
